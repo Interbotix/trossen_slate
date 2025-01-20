@@ -5,11 +5,11 @@ using namespace slate_base;
 int main()
 {
   SlateBase slate;
-  slate.set_light_state(LightState::LIGHT_STATE_GREEN_FLASH);
+  slate.set_light_state(LightState::LIGHT_STATE_YELLOW);
   slate.set_text("Hello world");
-  slate.enable_charging(true);
-  slate.enable_motor_torque(true);
-  slate.set_cmd_vel(-0.2, 0.0);
+  slate.enable_charging(false);
+  slate.enable_motor_torque(false);
+  slate.set_cmd_vel(0.2, 0.0);
 
   while (true)
   {
