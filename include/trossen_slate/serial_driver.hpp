@@ -26,45 +26,60 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef INTERBOTIX_SLATE_DRIVER__BASE_DRIVER_HPP_
-#define INTERBOTIX_SLATE_DRIVER__BASE_DRIVER_HPP_
+#ifndef TROSSEN_SLATE__SERIAL_DRIVER_HPP_
+#define TROSSEN_SLATE__SERIAL_DRIVER_HPP_
 
+#include <termio.h>
+
+#include <mutex>
 #include <string>
 
-#include "serial_driver.hpp"
-
-namespace base_driver
+typedef enum
 {
+  SYS_INIT = 0x00,
+  SYS_NORMAL,
+  SYS_REMOTE,
+  SYS_ESTOP,
+  SYS_CALIB,
+  SYS_TEST,
+  SYS_CHARGING,
 
-typedef struct
+  SYS_ERR = 0x10,
+  SYS_ERR_ID,
+  SYS_ERR_COM,
+  SYS_ERR_ENC,
+  SYS_ERR_COLLISION,
+  SYS_ERR_LOW_VOLTAGE,
+  SYS_ERR_OVER_VOLTAGE,
+  SYS_ERR_OVER_CURRENT,
+  SYS_ERR_OVER_TEMP,
+
+  SYS_STATE_LEN,
+} SystemState;
+
+class SerialDriver
 {
-  float cmd_vel_x;
-  float cmd_vel_y;
-  float cmd_vel_z;
-  uint32_t light_state;
+public:
+  ~SerialDriver();
+  bool init(std::string & port, uint8_t id, int baud = B115200);
 
-  uint32_t system_state;
-  uint32_t charge;
-  float voltage;
-  float current;
-  float vel_x;
-  float vel_y;
-  float vel_z;
-  float odom_x;
-  float odom_y;
-  float odom_z;
-  uint32_t cmd;
-  uint32_t io;
-  uint32_t err;
-} ChassisData;
+  bool getVersion(char * version);
+  bool setText(const char * text);
 
-bool chassisInit(std::string & dev);
-bool getVersion(char * data);
-bool setText(const char * text);
-bool updateChassisInfo(ChassisData * data);
-bool setSysCmd(uint32_t cmd);
-bool setIo(uint32_t io);
+  int readHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t * data);
+  int writeHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t * data);
+  int readWriteHoldingRegs(
+    uint16_t raddr, uint16_t rcnt, uint16_t * rdata,
+    uint16_t waddr, uint16_t wcnt, uint16_t * wdata);
 
-} // namespace base_driver
+  int send(const void * data, int len, int timeout = 0);
+  int recv(uint8_t * data, int maxlen, int timeout = 0);
 
-#endif // INTERBOTIX_SLATE_DRIVER__BASE_DRIVER_HPP_
+private:
+  void * m = nullptr;
+  int fd_ = -1;
+  fd_set read_set_;
+  std::mutex lock;
+};
+
+#endif // TROSSEN_SLATE__SERIAL_DRIVER_HPP_

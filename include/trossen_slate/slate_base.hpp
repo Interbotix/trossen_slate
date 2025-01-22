@@ -26,8 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef INTERBOTIX_SLATE_DRIVER__SLATE_BASE_HPP_
-#define INTERBOTIX_SLATE_DRIVER__SLATE_BASE_HPP_
+#ifndef TROSSEN_SLATE__SLATE_BASE_HPP_
+#define TROSSEN_SLATE__SLATE_BASE_HPP_
 
 #include <memory>
 #include <string>
@@ -36,7 +36,7 @@
 #include "base_driver.hpp"
 #include "serial_driver.hpp"
 
-enum class LightState : uint8_t
+enum class LightState : uint32_t
 {
   OFF = 0,
   RED,
@@ -61,6 +61,8 @@ namespace slate_base
 
 #define CMD_TIME_OUT 300 // ms
 #define PORT "chassis"
+#define MAX_VEL_X 1.0f
+#define MAX_VEL_Z 1.0f
 
 class SlateBase
 {
@@ -74,28 +76,29 @@ public:
   ~SlateBase() {}
 
   /**
-   * @brief Read data from the Slate base
+   * @brief Read data from the SLATE base
    * @param data The desired data reference to update with current data
    */
   void read(base_driver::ChassisData & data);
 
   /**
-   * @brief Write data to the Slate base
+   * @brief Write data to the SLATE base
    * @param data The desired data to write
    * @return true if succeeded, false otherwise
    */
   bool write(base_driver::ChassisData data);
 
   /**
-   * @brief Initializes Slate base
+   * @brief Initializes the SLATE base
    * @param result The resulting output string
+   * @return true if succeeded, false otherwise
    */
-  void init_base(std::string & result);
+  bool init_base(std::string & result);
 
   /**
-   * @brief Set velocity commands
-   * @param linear The desired linear velocity in meters per second
-   * @param angular The desired angular velocity in meters per second
+   * @brief Set velocity commands in meters per second
+   * @param linear The desired linear velocity
+   * @param angular The desired angular velocity
    * @return true if succeeded, false otherwise
    */
   bool set_cmd_vel(float linear, float angular);
@@ -133,31 +136,31 @@ public:
   bool enable_charging(bool enable, std::string & result);
 
   /**
-   * @brief Get velocity
+   * @brief Get the current velocity in meters per seconds
    * @return The current velocity [linear velocity, angular velocity]
    */
   std::array<float, 2> get_vel();
 
   /**
-   * @brief Get current pose
+   * @brief Get the current pose in meters (x,y) and radians (theta)
    * @return The current pose [x, y, theta]
    */
   std::array<float, 3> get_pose();
 
   /**
-   * @brief Gets the current charge %
+   * @brief Get the current charge percentage
    * @return The current charge
    */
   uint32_t get_charge();
 
   /**
-   * @brief Gets the current motor current in amps
+   * @brief Get the current motor current in amps
    * @return The current motor current
    */
   float get_current();
 
   /**
-   * @brief Gets the current voltage in volts
+   * @brief Get the current voltage in volts
    * @return The current voltage
    */
   float get_voltage();
@@ -166,13 +169,7 @@ private:
   // Flag to keep track of base initialization
   bool base_initialized_ = false;
 
-  // Max linear velocity in the x-direction in meters per second
-  float max_vel_x_ = 1.0;
-
-  // Max angular velocity about the z-axis in radians per second
-  float max_vel_z_ = 1.0;
-
-  // Stored data of the Slate base - see base_driver.hpp for details
+  // Stored data of the SLATE base - see base_driver.hpp for details
   base_driver::ChassisData data_;
 
   // Base command bytes containing data about charging and motor torque enabling
@@ -181,4 +178,4 @@ private:
 
 } // namespace slate_base
 
-#endif // INTERBOTIX_SLATE_DRIVER__SLATE_BASE_HPP_
+#endif // TROSSEN_SLATE__SLATE_BASE_HPP_

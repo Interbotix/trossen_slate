@@ -25,12 +25,12 @@ endif()
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH})
 
-add_library(slate_base
+add_library(${PROJECT_NAME}.
   src/slate_base.cpp
   src/base_driver.cpp
 )
 
-target_link_libraries(slate_base
+target_link_libraries(${PROJECT_NAME}.
   ${serial_driver}
 )
 
@@ -42,15 +42,15 @@ add_executable(advanced_demo
 )
 
 target_link_libraries(basic_demo
-  slate_base
+  ${PROJECT_NAME}.
 )
 
 target_link_libraries(advanced_demo
-  slate_base
+  ${PROJECT_NAME}.
 )
 
 install(
-  TARGETS slate_base
+  TARGETS ${PROJECT_NAME}.
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

@@ -26,12 +26,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "slate_base.hpp"
+#include "trossen_slate/slate_base.hpp"
 
 namespace slate_base
 {
+
 SlateBase::SlateBase()
-: sys_cmd_{0}, max_vel_x_(1.0), max_vel_z_(1.0)
+: sys_cmd_{0}
 {
 }
 
@@ -49,13 +50,13 @@ bool SlateBase::write(base_driver::ChassisData data)
   return true;
 }
 
-void SlateBase::init_base(std::string & result)
+bool SlateBase::init_base(std::string & result)
 {
   if (!base_initialized_) {
     std::string dev;
     if (!base_driver::chassisInit(dev)) {
       result = "Failed to initialize base port.";
-      return;
+      return false;
     } else {
       result = "Initalized base at port " + dev;
       char version[32] = {0};
@@ -67,12 +68,13 @@ void SlateBase::init_base(std::string & result)
   } else {
     result = "Base already initialized.";
   }
+  return true;
 }
 
 bool SlateBase::set_cmd_vel(float linear_vel, float angular_vel)
 {
-  linear_vel = std::min(max_vel_x_, std::max(-max_vel_x_, linear_vel));
-  angular_vel = std::min(max_vel_z_, std::max(-max_vel_z_, angular_vel));
+  linear_vel = std::min(MAX_VEL_X, std::max(-MAX_VEL_X, linear_vel));
+  angular_vel = std::min(MAX_VEL_Z, std::max(-MAX_VEL_Z, angular_vel));
 
   data_.cmd_vel_x = linear_vel;
   data_.cmd_vel_z = angular_vel;
@@ -88,7 +90,7 @@ bool SlateBase::set_text(std::string text)
 
 bool SlateBase::set_light_state(LightState light_state)
 {
-  data_.light_state = static_cast<uint8_t>(light_state);
+  data_.light_state = static_cast<uint32_t>(light_state);
   return write(data_);
 }
 
