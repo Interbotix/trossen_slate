@@ -34,11 +34,18 @@ target_link_libraries(slate_base
   ${serial_driver}
 )
 
-add_executable(test
-  src/test.cpp
+add_executable(basic_demo
+  demos/basic_demo.cpp
+)
+add_executable(advanced_demo
+  demos/advanced_demo.cpp
 )
 
-target_link_libraries(test
+target_link_libraries(basic_demo
+  slate_base
+)
+
+target_link_libraries(advanced_demo
   slate_base
 )
 
@@ -51,7 +58,8 @@ install(
 
 install(
   TARGETS
-    test
+  basic_demo
+  advanced_demo
   RUNTIME DESTINATION
     lib/${PROJECT_NAME}
 )

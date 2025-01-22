@@ -33,7 +33,6 @@
 
 #include "serial_driver.hpp"
 
-
 namespace base_driver
 {
 
@@ -59,13 +58,13 @@ typedef struct
   uint32_t err;
 } ChassisData;
 
-bool chassisInit(std::string &dev);
-bool getVersion(char *data);
-bool setText(const char *text);
-bool updateChassisInfo(ChassisData *data);
+bool chassisInit(std::string & dev);
+bool getVersion(char * data);
+bool setText(const char * text);
+bool updateChassisInfo(ChassisData * data);
 bool setSysCmd(uint32_t cmd);
 bool setIo(uint32_t io);
 
-}  // namespace base_driver
+} // namespace base_driver
 
-#endif  // INTERBOTIX_SLATE_DRIVER__BASE_DRIVER_HPP_
+#endif // INTERBOTIX_SLATE_DRIVER__BASE_DRIVER_HPP_

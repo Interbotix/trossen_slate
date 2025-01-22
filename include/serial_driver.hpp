@@ -59,26 +59,27 @@ typedef enum
 
 class SerialDriver
 {
- public:
+public:
   ~SerialDriver();
-  bool init(std::string& port, uint8_t id, int baud = B115200);
+  bool init(std::string & port, uint8_t id, int baud = B115200);
 
-  bool getVersion(char* version);
-  bool setText(const char* text);
+  bool getVersion(char * version);
+  bool setText(const char * text);
 
-  int readHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t* data);
-  int writeHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t* data);
-  int readWriteHoldingRegs(uint16_t raddr, uint16_t rcnt, uint16_t* rdata,
-                           uint16_t waddr, uint16_t wcnt, uint16_t* wdata);
+  int readHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t * data);
+  int writeHoldingRegs(uint16_t addr, uint16_t cnt, uint16_t * data);
+  int readWriteHoldingRegs(
+    uint16_t raddr, uint16_t rcnt, uint16_t * rdata,
+    uint16_t waddr, uint16_t wcnt, uint16_t * wdata);
 
-  int send(const void* data, int len, int timeout = 0);
-  int recv(uint8_t* data, int maxlen, int timeout = 0);
+  int send(const void * data, int len, int timeout = 0);
+  int recv(uint8_t * data, int maxlen, int timeout = 0);
 
- private:
-  void* m = nullptr;
+private:
+  void * m = nullptr;
   int fd_ = -1;
   fd_set read_set_;
   std::mutex lock;
 };
 
-#endif  // INTERBOTIX_SLATE_DRIVER__SERIAL_DRIVER_HPP_
+#endif // INTERBOTIX_SLATE_DRIVER__SERIAL_DRIVER_HPP_

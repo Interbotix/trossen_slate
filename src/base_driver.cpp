@@ -37,26 +37,27 @@ namespace base_driver
 uint32_t err_cnt = 0;
 SerialDriver driver;
 
-bool chassisInit(std::string &dev) { return driver.init(dev, 1, B115200); }
+bool chassisInit(std::string & dev) {return driver.init(dev, 1, B115200);}
 
 bool check(int ret)
 {
   err_cnt += (ret == 0 ? 0 : 1);
-  if (err_cnt > MAX_TIMEOUT_CNT)
-  {
+  if (err_cnt > MAX_TIMEOUT_CNT) {
     std::string dev;
     err_cnt = 0;
   }
   return !ret;
 }
 
-bool getVersion(char *data) { return driver.getVersion(data); }
-bool setText(const char *text) { return driver.setText(text); }
+bool getVersion(char * data) {return driver.getVersion(data);}
+bool setText(const char * text) {return driver.setText(text);}
 
-bool updateChassisInfo(ChassisData *data)
+bool updateChassisInfo(ChassisData * data)
 {
-  return check(driver.readWriteHoldingRegs(0x00, 26, (uint16_t *)&(data->system_state),
-                                           0x40, 8, (uint16_t *)data));
+  return check(
+    driver.readWriteHoldingRegs(
+      0x00, 26, (uint16_t *)&(data->system_state),
+      0x40, 8, (uint16_t *)data));
 }
 
 bool setSysCmd(uint32_t cmd)
