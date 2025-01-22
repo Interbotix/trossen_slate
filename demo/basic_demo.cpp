@@ -26,16 +26,18 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+// This demo showcases how to use basic methods to control and the SLATE base.
+
 #include <iostream>
 
-#include "trossen_slate/slate_base.hpp"
+#include "trossen_slate/trossen_slate.hpp"
 
-using namespace slate_base;
+using namespace trossen_slate;
 
 int main()
 {
-  // Create SlateBase object
-  SlateBase slate;
+  // Create TrossenSlate object
+  TrossenSlate slate;
 
   // Initialize base and output result
   std::string result_init;

@@ -26,15 +26,15 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TROSSEN_SLATE__SLATE_BASE_HPP_
-#define TROSSEN_SLATE__SLATE_BASE_HPP_
+#ifndef TROSSEN_SLATE__TROSSEN_SLATE_HPP_
+#define TROSSEN_SLATE__TROSSEN_SLATE_HPP_
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "base_driver.hpp"
-#include "serial_driver.hpp"
+#include "trossen_slate/base_driver.hpp"
+#include "trossen_slate/serial_driver.hpp"
 
 enum class LightState : uint32_t
 {
@@ -56,24 +56,25 @@ enum class LightState : uint32_t
   WHITE_FLASH
 };
 
-namespace slate_base
+namespace trossen_slate
 {
 
 #define CMD_TIME_OUT 300 // ms
 #define PORT "chassis"
+
 #define MAX_VEL_X 1.0f
 #define MAX_VEL_Z 1.0f
 
-class SlateBase
+class TrossenSlate
 {
 public:
   /**
-   * @brief Constructor for SlateBase
+   * @brief Constructor for TrossenSlate
    */
-  SlateBase();
+  TrossenSlate();
 
-  /// @brief Destructor for SlateBase
-  ~SlateBase() {}
+  /// @brief Destructor for TrossenSlate
+  ~TrossenSlate() {}
 
   /**
    * @brief Read data from the SLATE base
@@ -96,7 +97,7 @@ public:
   bool init_base(std::string & result);
 
   /**
-   * @brief Set velocity commands in meters per second
+   * @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
    * @param linear The desired linear velocity
    * @param angular The desired angular velocity
    * @return true if succeeded, false otherwise
@@ -136,7 +137,7 @@ public:
   bool enable_charging(bool enable, std::string & result);
 
   /**
-   * @brief Get the current velocity in meters per seconds
+   * @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
    * @return The current velocity [linear velocity, angular velocity]
    */
   std::array<float, 2> get_vel();
@@ -176,6 +177,6 @@ private:
   uint32_t sys_cmd_ = 0;
 };
 
-} // namespace slate_base
+} // namespace trossen_slate
 
-#endif // TROSSEN_SLATE__SLATE_BASE_HPP_
+#endif // TROSSEN_SLATE__TROSSEN_SLATE_HPP_

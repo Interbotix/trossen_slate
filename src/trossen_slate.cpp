@@ -26,22 +26,22 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "trossen_slate/slate_base.hpp"
+#include "trossen_slate/trossen_slate.hpp"
 
-namespace slate_base
+namespace trossen_slate
 {
 
-SlateBase::SlateBase()
+TrossenSlate::TrossenSlate()
 : sys_cmd_{0}
 {
 }
 
-void SlateBase::read(base_driver::ChassisData & data)
+void TrossenSlate::read(base_driver::ChassisData & data)
 {
   data = data_;
 }
 
-bool SlateBase::write(base_driver::ChassisData data)
+bool TrossenSlate::write(base_driver::ChassisData data)
 {
   if (!base_driver::updateChassisInfo(&data)) {
     return false;
@@ -50,7 +50,7 @@ bool SlateBase::write(base_driver::ChassisData data)
   return true;
 }
 
-bool SlateBase::init_base(std::string & result)
+bool TrossenSlate::init_base(std::string & result)
 {
   if (!base_initialized_) {
     std::string dev;
@@ -71,7 +71,7 @@ bool SlateBase::init_base(std::string & result)
   return true;
 }
 
-bool SlateBase::set_cmd_vel(float linear_vel, float angular_vel)
+bool TrossenSlate::set_cmd_vel(float linear_vel, float angular_vel)
 {
   linear_vel = std::min(MAX_VEL_X, std::max(-MAX_VEL_X, linear_vel));
   angular_vel = std::min(MAX_VEL_Z, std::max(-MAX_VEL_Z, angular_vel));
@@ -82,19 +82,19 @@ bool SlateBase::set_cmd_vel(float linear_vel, float angular_vel)
   return write(data_);
 }
 
-bool SlateBase::set_text(std::string text)
+bool TrossenSlate::set_text(std::string text)
 {
   base_driver::setText(text.c_str());
   return true;
 }
 
-bool SlateBase::set_light_state(LightState light_state)
+bool TrossenSlate::set_light_state(LightState light_state)
 {
   data_.light_state = static_cast<uint32_t>(light_state);
   return write(data_);
 }
 
-bool SlateBase::enable_motor_torque(bool enable, std::string & result)
+bool TrossenSlate::enable_motor_torque(bool enable, std::string & result)
 {
   enable ? sys_cmd_ &= ~(1) : sys_cmd_ |= 1;
   bool success = base_driver::setSysCmd(sys_cmd_);
@@ -108,7 +108,7 @@ bool SlateBase::enable_motor_torque(bool enable, std::string & result)
   return success;
 }
 
-bool SlateBase::enable_charging(bool enable, std::string & result)
+bool TrossenSlate::enable_charging(bool enable, std::string & result)
 {
   enable ? sys_cmd_ &= ~(2) : sys_cmd_ |= 2;
   bool success = base_driver::setSysCmd(sys_cmd_);
@@ -123,7 +123,7 @@ bool SlateBase::enable_charging(bool enable, std::string & result)
   return success;
 }
 
-std::array<float, 2> SlateBase::get_vel()
+std::array<float, 2> TrossenSlate::get_vel()
 {
   std::array<float, 2> cmd_vel;
   cmd_vel[0] = data_.vel_x;
@@ -131,7 +131,7 @@ std::array<float, 2> SlateBase::get_vel()
   return cmd_vel;
 }
 
-std::array<float, 3> SlateBase::get_pose()
+std::array<float, 3> TrossenSlate::get_pose()
 {
   std::array<float, 3> pose;
   pose[0] = data_.odom_x;
@@ -140,19 +140,19 @@ std::array<float, 3> SlateBase::get_pose()
   return pose;
 }
 
-uint32_t SlateBase::get_charge()
+uint32_t TrossenSlate::get_charge()
 {
   return data_.charge;
 }
 
-float SlateBase::get_current()
+float TrossenSlate::get_current()
 {
   return data_.current;
 }
 
-float SlateBase::get_voltage()
+float TrossenSlate::get_voltage()
 {
   return data_.voltage;
 }
 
-} // namespace slate_base
+} // namespace trossen_slate

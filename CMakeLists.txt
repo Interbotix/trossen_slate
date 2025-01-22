@@ -25,32 +25,32 @@ endif()
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH})
 
-add_library(${PROJECT_NAME}.
-  src/slate_base.cpp
+add_library(${PROJECT_NAME}
+  src/trossen_slate.cpp
   src/base_driver.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}.
+target_link_libraries(${PROJECT_NAME}
   ${serial_driver}
 )
 
 add_executable(basic_demo
-  demos/basic_demo.cpp
+  demo/basic_demo.cpp
 )
 add_executable(advanced_demo
-  demos/advanced_demo.cpp
+  demo/advanced_demo.cpp
 )
 
 target_link_libraries(basic_demo
-  ${PROJECT_NAME}.
+  ${PROJECT_NAME}
 )
 
 target_link_libraries(advanced_demo
-  ${PROJECT_NAME}.
+  ${PROJECT_NAME}
 )
 
 install(
-  TARGETS ${PROJECT_NAME}.
+  TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
