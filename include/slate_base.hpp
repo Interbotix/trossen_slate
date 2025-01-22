@@ -32,7 +32,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <chrono>
 
 #include "base_driver.hpp"
 #include "serial_driver.hpp"

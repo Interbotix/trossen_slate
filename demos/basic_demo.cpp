@@ -25,9 +25,13 @@ int main()
     // Output current charge percentage
     std::cout << "Charge: " << slate.get_charge() << "%" << std::endl;
 
-    // Get velocity and output value
+    // Get velocity and output values
     std::array<float, 2> vel = slate.get_vel();
-    std::cout << vel[1] << std::endl;
+    std::cout << "Linear velocity: " << vel[0] << " Angular velocity: " << vel[1] << std::endl;
+
+    // Get pose and output values
+    std::array<float, 3> pose = slate.get_pose();
+    std::cout << "X: " << pose[0] << " Y: " << pose[1] << " Theta: " << pose[2] << std::endl;
   }
 
   return 0;

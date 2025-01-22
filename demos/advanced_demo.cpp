@@ -36,8 +36,12 @@ int main()
 
     // Read and output data
     slate.read(log_data);
-    std::cout << log_data.vel_z << std::endl;
-    std::cout << log_data.charge << std::endl;
+
+    std::cout << "Charge: " << log_data.charge << "%" << std::endl;
+    std::cout << "Linear velocity: " << log_data.vel_x << " Angular velocity: " << log_data.vel_z <<
+      std::endl;
+    std::cout << "X: " << log_data.odom_x << " Y: " << log_data.odom_y << " Theta: " <<
+      log_data.odom_z << std::endl;
   }
 
   return 0;
