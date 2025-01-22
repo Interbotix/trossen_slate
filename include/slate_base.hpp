@@ -83,8 +83,9 @@ public:
   /**
    * @brief Write data to the Slate base
    * @param data The desired data to write
+   * @return true if succeeded, false otherwise
    */
-  void write(base_driver::ChassisData data);
+  bool write(base_driver::ChassisData data);
 
   /**
    * @brief Initializes Slate base
@@ -163,6 +164,9 @@ public:
   float get_voltage();
 
 private:
+  // Flag to keep track of base initialization
+  bool base_initialized_ = false;
+
   // Max linear velocity in the x-direction in meters per second
   float max_vel_x_ = 1.0;
 

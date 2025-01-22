@@ -40,27 +40,32 @@ void SlateBase::read(base_driver::ChassisData & data)
   data = data_;
 }
 
-void SlateBase::write(base_driver::ChassisData data)
+bool SlateBase::write(base_driver::ChassisData data)
 {
   if (!base_driver::updateChassisInfo(&data)) {
-    return;
+    return false;
   }
   data_ = data;
+  return true;
 }
 
 void SlateBase::init_base(std::string & result)
 {
-  std::string dev;
-
-  if (!base_driver::chassisInit(dev)) {
-    result = "Failed to initialize base port.";
-    return;
-  } else {
-    result = "Initalized base at port " + dev;
-    char version[32] = {0};
-    if (base_driver::getVersion(version)) {
-      result += "\nBase version: " + std::string(version);
+  if (!base_initialized_) {
+    std::string dev;
+    if (!base_driver::chassisInit(dev)) {
+      result = "Failed to initialize base port.";
+      return;
+    } else {
+      result = "Initalized base at port " + dev;
+      char version[32] = {0};
+      if (base_driver::getVersion(version)) {
+        result += "\nBase version: " + std::string(version);
+        base_initialized_ = true;
+      }
     }
+  } else {
+    result = "Base already initialized.";
   }
 }
 
@@ -72,8 +77,7 @@ bool SlateBase::set_cmd_vel(float linear_vel, float angular_vel)
   data_.cmd_vel_x = linear_vel;
   data_.cmd_vel_z = angular_vel;
 
-  write(data_);
-  return true;
+  return write(data_);
 }
 
 bool SlateBase::set_text(std::string text)
@@ -85,8 +89,7 @@ bool SlateBase::set_text(std::string text)
 bool SlateBase::set_light_state(LightState light_state)
 {
   data_.light_state = static_cast<uint8_t>(light_state);
-  write(data_);
-  return true;
+  return write(data_);
 }
 
 bool SlateBase::enable_motor_torque(bool enable, std::string & result)
