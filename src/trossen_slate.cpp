@@ -50,13 +50,13 @@ bool TrossenSlate::write(base_driver::ChassisData data)
   return true;
 }
 
-bool TrossenSlate::init_base(std::string & result)
+std::string TrossenSlate::init_base()
 {
+  std::string result;
   if (!base_initialized_) {
     std::string dev;
     if (!base_driver::chassisInit(dev)) {
-      result = "Failed to initialize base port.";
-      return false;
+      throw std::runtime_error("Failed to initialize base port.");
     } else {
       result = "Initalized base at port " + dev;
       char version[32] = {0};
@@ -68,7 +68,7 @@ bool TrossenSlate::init_base(std::string & result)
   } else {
     result = "Base already initialized.";
   }
-  return true;
+  return result;
 }
 
 bool TrossenSlate::set_cmd_vel(float linear_vel, float angular_vel)
@@ -94,8 +94,9 @@ bool TrossenSlate::set_light_state(LightState light_state)
   return write(data_);
 }
 
-bool TrossenSlate::enable_motor_torque(bool enable, std::string & result)
+std::string TrossenSlate::enable_motor_torque(bool enable)
 {
+  std::string result;
   enable ? sys_cmd_ &= ~(1) : sys_cmd_ |= 1;
   bool success = base_driver::setSysCmd(sys_cmd_);
   std::string enabled_disabled = enable ? "enable" : "disable";
@@ -105,11 +106,12 @@ bool TrossenSlate::enable_motor_torque(bool enable, std::string & result)
   } else {
     result = "Failed to " + enabled_disabled + " motor torque.";
   }
-  return success;
+  return result;
 }
 
-bool TrossenSlate::enable_charging(bool enable, std::string & result)
+std::string TrossenSlate::enable_charging(bool enable)
 {
+  std::string result;
   enable ? sys_cmd_ &= ~(2) : sys_cmd_ |= 2;
   bool success = base_driver::setSysCmd(sys_cmd_);
 
@@ -120,7 +122,7 @@ bool TrossenSlate::enable_charging(bool enable, std::string & result)
   } else {
     result = "Failed to " + enabled_disabled + " charging.";
   }
-  return success;
+  return result;
 }
 
 std::array<float, 2> TrossenSlate::get_vel()
