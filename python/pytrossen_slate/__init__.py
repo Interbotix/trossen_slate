@@ -27,7 +27,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from .trossen_slate import (
-    TrossenSlate,
-    LightState,
     ChassisData,
+    LightState,
+    TrossenSlate,
 )

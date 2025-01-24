@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.15.0)
-project(trossen_slate_cpp VERSION 0.0.1)
+project(trossen_slate VERSION 0.0.1)
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+set(CMAKE_BUILD_TYPE "Release")
 
 # Set system architecture
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
