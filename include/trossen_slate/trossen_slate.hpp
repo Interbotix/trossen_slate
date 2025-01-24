@@ -91,10 +91,9 @@ public:
 
   /**
    * @brief Initializes the SLATE base
-   * @param result The resulting output string
-   * @return true if succeeded, false otherwise
+   * @return The resulting output string
    */
-  bool init_base(std::string & result);
+  std::string init_base();
 
   /**
    * @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
@@ -123,18 +122,16 @@ public:
   /**
    * @brief Enable/disable motor torque
    * @param enable Whether to enable motor torque or not
-   * @param result The resulting output string
-   * @return true if succeeded, false otherwise
+   * @return The resulting output string
    */
-  bool enable_motor_torque(bool enable, std::string & result);
+  std::string enable_motor_torque(bool enable);
 
   /**
    * @brief Enable/disable charging
    * @param enable Whether to enable charging or not
-   * @param result The resulting output string
-   * @return true if succeeded, false otherwise
+   * @return The resulting output string
    */
-  bool enable_charging(bool enable, std::string & result);
+  std::string enable_charging(bool enable);
 
   /**
    * @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
