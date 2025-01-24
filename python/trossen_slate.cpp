@@ -33,6 +33,7 @@
 #include <string>
 
 #include "trossen_slate/trossen_slate.hpp"
+#include "trossen_slate/base_driver.hpp"
 
 namespace py = pybind11;
 
@@ -61,112 +62,173 @@ PYBIND11_MODULE(trossen_slate, m)
   .value("WHITE_FLASH", LightState::WHITE_FLASH)
   .export_values();
 
+  py::class_<base_driver::ChassisData>(m, "ChassisData")
+  .def(py::init<>())
+  .def_readwrite("cmd_vel_x", &base_driver::ChassisData::cmd_vel_x)
+  .def_readwrite("cmd_vel_y", &base_driver::ChassisData::cmd_vel_y)
+  .def_readwrite("cmd_vel_z", &base_driver::ChassisData::cmd_vel_z)
+  .def_readwrite("light_state", &base_driver::ChassisData::light_state)
+  .def_readwrite("system_state", &base_driver::ChassisData::system_state)
+  .def_readwrite("charge", &base_driver::ChassisData::charge)
+  .def_readwrite("voltage", &base_driver::ChassisData::voltage)
+  .def_readwrite("current", &base_driver::ChassisData::current)
+  .def_readwrite("vel_x", &base_driver::ChassisData::vel_x)
+  .def_readwrite("vel_y", &base_driver::ChassisData::vel_y)
+  .def_readwrite("vel_z", &base_driver::ChassisData::vel_z)
+  .def_readwrite("odom_x", &base_driver::ChassisData::odom_x)
+  .def_readwrite("odom_y", &base_driver::ChassisData::odom_y)
+  .def_readwrite("odom_z", &base_driver::ChassisData::odom_z)
+  .def_readwrite("cmd", &base_driver::ChassisData::cmd)
+  .def_readwrite("io", &base_driver::ChassisData::io)
+  .def_readwrite("err", &base_driver::ChassisData::err);
+
   py::class_<TrossenSlate>(m, "TrossenSlate")
   .def(py::init<>())
   .def(
-    "read", &TrossenSlate::read, R"pbdoc(
-            Read data from the SLATE base
-
-            :param data: The desired data reference to update with current data
-        )pbdoc",
+    "read",
+    &TrossenSlate::read,
     py::arg(
-      "data"))
-  .def(
-    "write", &TrossenSlate::write, R"pbdoc(
-            Write data to the SLATE base
-
-            :param data: The desired data to write
-            :return: true if succeeded, false otherwise
-        )pbdoc",
-    py::arg(
-      "data"))
-  .def(
-    "init_base", &TrossenSlate::init_base,
+      "data"),
     R"pbdoc(
-            Initializes the SLATE base
-
-            :return: The resulting output string
-        )pbdoc")
+      @brief Read data from the SLATE base
+      
+      @param data The desired data reference to update with current data
+    )pbdoc")
   .def(
-    "set_cmd_vel", &TrossenSlate::set_cmd_vel, R"pbdoc(
-            Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
-
-            :param linear: The desired linear velocity
-            :param angular: The desired angular velocity
-            :return: true if succeeded, false otherwise
-        )pbdoc",
+    "write",
+    &TrossenSlate::write,
     py::arg(
-      "linear"), py::arg("angular"))
+      "data"),
+    R"pbdoc(
+      @brief Write data to the SLATE base
+      
+      @param data The desired data to write
+      @return true if succeeded, false otherwise
+    )pbdoc")
   .def(
-    "set_light_state", &TrossenSlate::set_light_state, R"pbdoc(
-            Set light state
-
-            :param light_state: The desired light state
-            :return: true if succeeded, false otherwise
-        )pbdoc",
+    "init_base",
+    [](TrossenSlate & self)
+    {
+      std::string result;
+      bool success = self.init_base(result);
+      return std::make_pair(
+        success,
+        result);
+    },
+    R"pbdoc(
+      @brief Initializes the SLATE base
+      
+      @param result The resulting output string
+      @return true if succeeded, false otherwise
+    )pbdoc")
+  .def(
+    "set_cmd_vel",
+    &TrossenSlate::set_cmd_vel,
+    py::arg("linear"),
     py::arg(
-      "light_state"))
+      "angular"),
+    R"pbdoc(
+      @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
+      
+      @param linear The desired linear velocity
+      @param angular The desired angular velocity
+      @return true if succeeded, false otherwise
+    )pbdoc")
   .def(
-    "set_text", &TrossenSlate::set_text, R"pbdoc(
-            Set text on screen
-
-            :param text: The desired text
-            :return: true if succeeded, false otherwise
-        )pbdoc",
+    "set_light_state",
+    &TrossenSlate::set_light_state,
     py::arg(
-      "text"))
+      "light_state"),
+    R"pbdoc(
+      @brief Set light state
+      
+      @param light_state The desired light state
+      @return true if succeeded, false otherwise
+    )pbdoc")
   .def(
-    "enable_motor_torque", &TrossenSlate::enable_motor_torque, R"pbdoc(
-            Enable/disable motor torque
-
-            :param enable: Whether to enable motor torque or not
-            :return: The resulting output string
-        )pbdoc",
+    "set_text",
+    &TrossenSlate::set_text,
     py::arg(
-      "enable"))
+      "text"),
+    R"pbdoc(
+      @brief Set text on screen
+      
+      @param text The desired text
+      @return true if succeeded, false otherwise
+    )pbdoc")
   .def(
-    "enable_charging", &TrossenSlate::enable_charging, R"pbdoc(
-            Enable/disable charging
-
-            :param enable: Whether to enable charging or not
-            :return: The resulting output string
-        )pbdoc",
+    "enable_motor_torque",
+    [](TrossenSlate & self, bool enable)
+    {
+      std::string result;
+      bool success = self.enable_motor_torque(enable, result);
+      return std::make_pair(success, result);
+    },
     py::arg(
-      "enable"))
-  .def(
-    "get_vel", &TrossenSlate::get_vel,
+      "enable"),
     R"pbdoc(
-            Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
-
-            :return: The current velocity [linear velocity, angular velocity]
-        )pbdoc")
+      @brief Enable/disable motor torque
+      
+      @param enable Whether to enable motor torque or not
+      @return A pair (bool, string) indicating success and the resulting output string
+    )pbdoc"
+  )
   .def(
-    "get_pose", &TrossenSlate::get_pose,
+    "enable_charging",
+    [](TrossenSlate & self, bool enable)
+    {
+      std::string result;
+      bool success = self.enable_charging(enable, result);
+      return std::make_pair(success, result);
+    },
+    py::arg(
+      "enable"),
     R"pbdoc(
-            Get the current pose in meters (x,y) and radians (theta)
-
-            :return: The current pose [x, y, theta]
-        )pbdoc")
+      @brief Enable/disable charging
+      
+      @param enable Whether to enable charging or not
+      @return A pair (bool, string) indicating success and the resulting output string
+    )pbdoc"
+  )
   .def(
-    "get_charge", &TrossenSlate::get_charge,
+    "get_vel",
+    &TrossenSlate::get_vel,
     R"pbdoc(
-            Get the current charge percentage
-
-            :return: The current charge
-        )pbdoc")
+      @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
+      
+      @return The current velocity [linear velocity, angular velocity]
+    )pbdoc")
   .def(
-    "get_current", &TrossenSlate::get_current,
+    "get_pose",
+    &TrossenSlate::get_pose,
     R"pbdoc(
-            Get the current motor current in amps
-
-            :return: The current motor current
-        )pbdoc")
+      @brief Get the current pose in meters (x,y) and radians (theta)
+      
+      @return The current pose [x, y, theta]
+    )pbdoc")
   .def(
-    "get_voltage", &TrossenSlate::get_voltage,
+    "get_charge",
+    &TrossenSlate::get_charge,
     R"pbdoc(
-            Get the current voltage in volts
-
-            :return: The current voltage
-        )pbdoc");
+      @brief Get the current charge percentage
+      
+      @return The current charge
+    )pbdoc")
+  .def(
+    "get_current",
+    &TrossenSlate::get_current,
+    R"pbdoc(
+      @brief Get the current motor current in amps
+      
+      @return The current motor current
+    )pbdoc")
+  .def(
+    "get_voltage",
+    &TrossenSlate::get_voltage,
+    R"pbdoc(
+      @brief Get the current voltage in volts
+      
+      @return The current voltage
+    )pbdoc");
 }
 } // namespace trossen_slate

@@ -26,7 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# This demo showcases how to use basic methods to control and monitor the SLATE base.
+"""This demo showcases how to use basic methods to control and monitor the SLATE base."""
 
 import trossen_slate as trossen
 
@@ -35,7 +35,8 @@ def main():
     slate = trossen.TrossenSlate()
 
     # Initialize base and output result
-    print(slate.init_base())
+    success, result = slate.init_base()
+    print(f"Initialization success: {success}\nResult: {result}")
 
     # Display "Hello world" on screen
     slate.set_text("Hello world")

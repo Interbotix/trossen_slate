@@ -26,7 +26,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-// This demo showcases how to use basic methods to control and monitor the SLATE base.
+// This demo showcases how to use basic methods to control and the SLATE base.
 
 #include <iostream>
 
@@ -40,7 +40,9 @@ int main()
   TrossenSlate slate;
 
   // Initialize base and output result
-  std::cout << slate.init_base() << std::endl;
+  std::string result_init;
+  slate.init_base(result_init);
+  std::cout << result_init << std::endl;
 
   // Display "Hello world" on screen
   slate.set_text("Hello world");

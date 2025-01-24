@@ -26,8 +26,44 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .trossen_slate import (
-    TrossenSlate,
-    LightState,
-    ChassisData,
-)
+"""This demo showcases how to use more detailed methods to control and monitor the SLATE base."""
+
+import trossen_slate as trossen
+
+def main():
+    # Create TrossenSlate object
+    slate = trossen.TrossenSlate()
+
+    # Initialize base and output result
+    success, result_init = slate.init_base()
+    print(f"Initialization success: {success}\nResult: {result_init}")
+
+    # Disable charging and output result
+    success, result_charging = slate.enable_charging(False)
+    print(f"Disable charging success: {success}\nResult: {result_charging}")
+
+    # Enable motor torque and output result
+    success, result_torque = slate.enable_motor_torque(True)
+    print(f"Enable motor torque success: {success}\nResult: {result_torque}")
+
+    while True:
+        # Initialize data with angular velocity and light state
+        my_data = trossen.ChassisData()
+        my_data.cmd_vel_z = -0.1
+        my_data.light_state = trossen.LightState.WHITE
+
+        # Write and update base data
+        slate.write(my_data)
+
+        # Initialize empty log data
+        log_data = trossen.ChassisData()
+
+        # Read and output data
+        slate.read(log_data)
+
+        print(f"Charge: {log_data.charge}%")
+        print(f"Linear velocity: {log_data.vel_x:.2f} Angular velocity: {log_data.vel_z:.2f}")
+        print(f"X: {log_data.odom_x:.2f} Y: {log_data.odom_y:.2f} Theta: {log_data.odom_z:.2f}")
+
+if __name__ == "__main__":
+    main()

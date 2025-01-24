@@ -40,13 +40,19 @@ int main()
   TrossenSlate slate;
 
   // Initialize base and output result
-  std::cout << slate.init_base() << std::endl;
+  std::string result_init;
+  slate.init_base(result_init);
+  std::cout << result_init << std::endl;
 
   // Disable charging and output result
-  std::cout << slate.enable_charging(false) << std::endl;
+  std::string result_charging;
+  slate.enable_charging(false, result_charging);
+  std::cout << result_charging << std::endl;
 
   // Enable motor torque and output result
-  std::cout << slate.enable_motor_torque(true) << std::endl;
+  std::string result_torque;
+  slate.enable_motor_torque(true, result_torque);
+  std::cout << result_torque << std::endl;
 
   while (true) {
     // Initialize data with angular velocity and light state
