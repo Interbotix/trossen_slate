@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15.0)
-project(trossen_slate VERSION 0.0.1)
+project(trossen_slate VERSION 1.0.0)
 
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
