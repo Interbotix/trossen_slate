@@ -11,6 +11,8 @@ endif()
 
 set(CMAKE_BUILD_TYPE "Release")
 
+set(serial_driver "chassis_driver")
+
 # Set system architecture
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
   set(ARCH "x86_64")
@@ -20,12 +22,18 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+find_package(ament_cmake REQUIRED)
+
 # Add the library
 add_library(${PROJECT_NAME} STATIC
   src/trossen_slate.cpp
   src/base_driver.cpp
 )
-target_include_directories(${PROJECT_NAME} PUBLIC include ${PROJECT_BINARY_DIR}/include)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/trossen_slate>
+)
 
 # Set the library to be position independent so that it can be linked to a shared library
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -43,11 +51,27 @@ target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
 add_executable(basic_demo demo/basic_demo.cpp)
 target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
 
-# Install the library and executables
-install(DIRECTORY include/trossen_slate DESTINATION ${PROJECT_BINARY_DIR}/include)
-install(TARGETS ${PROJECT_NAME} advanced_demo basic_demo
-  ARCHIVE DESTINATION ${PROJECT_BINARY_DIR}/lib
-  RUNTIME DESTINATION ${PROJECT_BINARY_DIR}/bin
+# Install the library
+install(DIRECTORY include/trossen_slate DESTINATION include/trossen_slate)
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT "export_${PROJECT_NAME}"
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# Install the executables
+install(TARGETS advanced_demo basic_demo
+  RUNTIME DESTINATION bin
+)
+
+# Install the serial driver library
+install(
+  FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/lib${serial_driver}.so
+  DESTINATION
+    lib
 )
 
 if(DEFINED SKBUILD)
@@ -91,3 +115,6 @@ if(DEFINED SKBUILD)
     LIBRARY DESTINATION ./${SKBUILD_PROJECT_NAME}
   )
 endif()
+
+ament_export_targets("export_${PROJECT_NAME}")
+ament_package()
