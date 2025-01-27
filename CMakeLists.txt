@@ -22,6 +22,10 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+if(NOT DEFINED SKBUILD)
+  find_package(ament_cmake REQUIRED)
+endif()
+
 # Add the library
 add_library(${PROJECT_NAME} STATIC
   src/trossen_slate.cpp
@@ -38,11 +42,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
   OUTPUT_NAME trossen_slate
 )
-
-# Check if colcon is being used to build
-if(DEFINED ENV{COLCON_PREFIX_PATH})
-  find_package(ament_cmake REQUIRED)
-endif()
 
 # Link the serial driver library
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libchassis_driver.so)
@@ -119,7 +118,7 @@ if(DEFINED SKBUILD)
   )
 endif()
 
-if(ament_cmake_FOUND)
+if(NOT DEFINED SKBUILD)
   ament_export_targets("export_${PROJECT_NAME}")
   ament_package()
 endif()
