@@ -22,8 +22,6 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-find_package(ament_cmake REQUIRED)
-
 # Add the library
 add_library(${PROJECT_NAME} STATIC
   src/trossen_slate.cpp
@@ -116,5 +114,7 @@ if(DEFINED SKBUILD)
   )
 endif()
 
-ament_export_targets("export_${PROJECT_NAME}")
-ament_package()
+if(ament_cmake_FOUND)
+  ament_export_targets("export_${PROJECT_NAME}")
+  ament_package()
+endif()
