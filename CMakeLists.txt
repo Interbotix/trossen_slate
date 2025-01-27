@@ -39,6 +39,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   OUTPUT_NAME trossen_slate
 )
 
+# Check if colcon is being used to build
+if(DEFINED ENV{COLCON_PREFIX_PATH})
+  find_package(ament_cmake REQUIRED)
+endif()
+
 # Link the serial driver library
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libchassis_driver.so)
 
