@@ -35,6 +35,7 @@
 
 #include "trossen_slate/base_driver.hpp"
 #include "trossen_slate/serial_driver.hpp"
+#include "trossen_slate/version.hpp"
 
 enum class LightState : uint32_t
 {
