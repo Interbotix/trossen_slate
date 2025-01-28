@@ -60,7 +60,7 @@ bool TrossenSlate::init_base(std::string & result)
       result += "\nFailed to initialize base port.";
       return false;
     } else {
-      result += "\nInitalized base at port: " + dev + ".";
+      result += "\nInitalized base at port: '" + dev + "'.";
       char version[32] = {0};
       if (base_driver::getVersion(version)) {
         result += "\nBase version: 'v" + std::string(version) + "'.";
