@@ -33,6 +33,7 @@
 #include <string>
 #include <vector>
 
+#include "trossen_slate/version.hpp"
 #include "trossen_slate/base_driver.hpp"
 #include "trossen_slate/serial_driver.hpp"
 
