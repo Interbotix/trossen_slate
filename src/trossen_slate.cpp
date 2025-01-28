@@ -53,7 +53,8 @@ bool TrossenSlate::write(base_driver::ChassisData data)
 bool TrossenSlate::init_base(std::string & result)
 {
   if (!base_initialized_) {
-    result = "Using Trossen SLATE Version: v" + std::to_string(VERSION_MAJOR) + "." + std::to_string(VERSION_MINOR) + "." + std::to_string(VERSION_PATCH);
+    result = "Using Trossen SLATE Version: v" + std::to_string(VERSION_MAJOR) + "." +
+      std::to_string(VERSION_MINOR) + "." + std::to_string(VERSION_PATCH);
     std::string dev;
     if (!base_driver::chassisInit(dev)) {
       result += "\nFailed to initialize base port.";
