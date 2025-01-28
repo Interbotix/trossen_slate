@@ -34,17 +34,19 @@ endif()
 # Include the version generation script
 include(cmake/Version.cmake)
 
+# Include directories
+include_directories(include ${CMAKE_CURRENT_BINARY_DIR}/include)
+
 # Add the library
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
   src/${PROJECT_NAME}.cpp
   src/base_driver.cpp
 )
 
 # Specify the include directories for the library
 target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>
 )
 
 # Set properties for the library
@@ -64,7 +66,7 @@ add_executable(basic_demo demo/basic_demo.cpp)
 target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
 
 # Install the library headers
-install(DIRECTORY include/${PROJECT_NAME} DESTINATION include/${PROJECT_NAME})
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
 
 # Install the library
 install(
@@ -73,6 +75,22 @@ install(
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
+)
+
+# Install the version output file
+install(
+  FILES
+    ${PATH_TO_VERSION_OUTPUT}
+  DESTINATION
+    include/${PROJECT_NAME}
+)
+
+# Install the package.xml file
+install(
+  FILES
+    package.xml
+  DESTINATION
+    share/${PROJECT_NAME}
 )
 
 # Install the demo executables
