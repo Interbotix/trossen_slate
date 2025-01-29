@@ -29,9 +29,9 @@
 #ifndef TROSSEN_SLATE__TROSSEN_SLATE_HPP_
 #define TROSSEN_SLATE__TROSSEN_SLATE_HPP_
 
+#include <array>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "trossen_slate/base_driver.hpp"
 #include "trossen_slate/serial_driver.hpp"
