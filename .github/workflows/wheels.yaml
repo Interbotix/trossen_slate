@@ -1,0 +1,42 @@
+name: Build Python wheels
+
+on:
+  # Run on workflow dispatch, workflow call, push to main, or pull request to main
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-wheels:
+    # Build wheels on all supported Python versions and platforms using pypa/cibuildwheel
+    strategy:
+      fail-fast: false
+      matrix:
+        # Support Linux only
+        os: [ubuntu-latest]
+        cibw_arch: ["native"]
+        # Support Python versions 3.8 ~ 3.12
+        cibw_build: ["cp38-* cp39-* cp310-* cp311-* cp312-*"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22
+        env:
+          CIBW_ARCHS: ${{ matrix.cibw_arch }}
+          CIBW_BEFORE_BUILD: "pip install -r requirements-dev.txt"
+          CIBW_BUILD: ${{ matrix.cibw_build }}
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_SKIP: "*musllinux*"
+
+      - name: Upload the distribution files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-${{ matrix.os }}-${{ matrix.cibw_arch }}
+          path: "./**/*.whl"

@@ -1,0 +1,54 @@
+name: Publish Python wheels
+
+on:
+  # Run on workflow dispatch event
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Repo to upload to (testpypi or pypi)'
+        default: 'testpypi'
+        required: true
+
+jobs:
+  build-wheels:
+    uses: ./.github/workflows/wheels.yaml
+    with:
+      repo: ${{ github.event.inputs.repo }}
+
+  publish:
+    # Publish built wheels to PyPI or TestPyPI using pypa/gh-action-pypi-publish
+    needs: build-wheels
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Extract archives, relocate wheels to dist/
+        run: |
+          mkdir -p dist/
+          find . -name "artifact-*" -exec unzip "{}" \;
+          find . -name "*.whl" -exec mv "{}" dist/ \;
+
+      - name: Print off wheel names
+        run: ls dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
+          print-hash: true
+        if: ${{ github.event.inputs.repo == 'pypi' }}
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          verbose: true
+          print-hash: true
+        if: ${{ github.event.inputs.repo == 'testpypi' }}
