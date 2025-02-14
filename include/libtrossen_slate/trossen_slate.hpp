@@ -26,16 +26,16 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TROSSEN_SLATE__TROSSEN_SLATE_HPP_
-#define TROSSEN_SLATE__TROSSEN_SLATE_HPP_
+#ifndef LIBTROSSEN_SLATE__TROSSEN_SLATE_HPP_
+#define LIBTROSSEN_SLATE__TROSSEN_SLATE_HPP_
 
 #include <array>
 #include <memory>
 #include <string>
 
-#include "trossen_slate/base_driver.hpp"
-#include "trossen_slate/serial_driver.hpp"
-#include "trossen_slate/version.hpp"
+#include "libtrossen_slate/base_driver.hpp"
+#include "libtrossen_slate/serial_driver.hpp"
+#include "libtrossen_slate/version.hpp"
 
 enum class LightState : uint32_t
 {
@@ -180,4 +180,4 @@ private:
 
 } // namespace trossen_slate
 
-#endif // TROSSEN_SLATE__TROSSEN_SLATE_HPP_
+#endif // LIBTROSSEN_SLATE__TROSSEN_SLATE_HPP_

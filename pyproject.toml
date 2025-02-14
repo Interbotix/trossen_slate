@@ -3,7 +3,7 @@ requires = ["scikit-build-core", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "pytrossen_slate"
+name = "trossen_slate"
 version = "1.0.0"
 description = "A Python wrapper for the trossen_slate C++ library"
 readme = "README.md"

@@ -32,8 +32,8 @@
 #include <array>
 #include <string>
 
-#include "trossen_slate/trossen_slate.hpp"
-#include "trossen_slate/base_driver.hpp"
+#include "libtrossen_slate/trossen_slate.hpp"
+#include "libtrossen_slate/base_driver.hpp"
 
 namespace py = pybind11;
 
@@ -91,7 +91,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "data"),
     R"pbdoc(
       @brief Read data from the SLATE base
-      
+
       @param data The desired data reference to update with current data
     )pbdoc")
   .def(
@@ -101,7 +101,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "data"),
     R"pbdoc(
       @brief Write data to the SLATE base
-      
+
       @param data The desired data to write
       @return true if succeeded, false otherwise
     )pbdoc")
@@ -117,7 +117,7 @@ PYBIND11_MODULE(trossen_slate, m)
     },
     R"pbdoc(
       @brief Initializes the SLATE base
-      
+
       @param result The resulting output string
       @return true if succeeded, false otherwise
     )pbdoc")
@@ -129,7 +129,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "angular"),
     R"pbdoc(
       @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
-      
+
       @param linear The desired linear velocity
       @param angular The desired angular velocity
       @return true if succeeded, false otherwise
@@ -141,7 +141,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "light_state"),
     R"pbdoc(
       @brief Set light state
-      
+
       @param light_state The desired light state
       @return true if succeeded, false otherwise
     )pbdoc")
@@ -152,7 +152,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "text"),
     R"pbdoc(
       @brief Set text on screen
-      
+
       @param text The desired text
       @return true if succeeded, false otherwise
     )pbdoc")
@@ -168,7 +168,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "enable"),
     R"pbdoc(
       @brief Enable/disable motor torque
-      
+
       @param enable Whether to enable motor torque or not
       @return A pair (bool, string) indicating success and the resulting output string
     )pbdoc"
@@ -185,7 +185,7 @@ PYBIND11_MODULE(trossen_slate, m)
       "enable"),
     R"pbdoc(
       @brief Enable/disable charging
-      
+
       @param enable Whether to enable charging or not
       @return A pair (bool, string) indicating success and the resulting output string
     )pbdoc"
@@ -195,7 +195,7 @@ PYBIND11_MODULE(trossen_slate, m)
     &TrossenSlate::get_vel,
     R"pbdoc(
       @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
-      
+
       @return The current velocity [linear velocity, angular velocity]
     )pbdoc")
   .def(
@@ -203,7 +203,7 @@ PYBIND11_MODULE(trossen_slate, m)
     &TrossenSlate::get_pose,
     R"pbdoc(
       @brief Get the current pose in meters (x,y) and radians (theta)
-      
+
       @return The current pose [x, y, theta]
     )pbdoc")
   .def(
@@ -211,7 +211,7 @@ PYBIND11_MODULE(trossen_slate, m)
     &TrossenSlate::get_charge,
     R"pbdoc(
       @brief Get the current charge percentage
-      
+
       @return The current charge
     )pbdoc")
   .def(
@@ -219,7 +219,7 @@ PYBIND11_MODULE(trossen_slate, m)
     &TrossenSlate::get_current,
     R"pbdoc(
       @brief Get the current motor current in amps
-      
+
       @return The current motor current
     )pbdoc")
   .def(
@@ -227,7 +227,7 @@ PYBIND11_MODULE(trossen_slate, m)
     &TrossenSlate::get_voltage,
     R"pbdoc(
       @brief Get the current voltage in volts
-      
+
       @return The current voltage
     )pbdoc");
 }
