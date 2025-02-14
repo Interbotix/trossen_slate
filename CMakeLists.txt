@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15.0)
-project(trossen_slate VERSION 1.0.0)
+project(libtrossen_slate VERSION 1.0.0)
 
 # Set the C++ standard to 17 if not already set
 if(NOT CMAKE_CXX_STANDARD)
@@ -39,7 +39,7 @@ include_directories(include ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # Add the library
 add_library(${PROJECT_NAME} SHARED
-  src/${PROJECT_NAME}.cpp
+  src/trossen_slate.cpp
   src/base_driver.cpp
 )
 
@@ -52,7 +52,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Set properties for the library
 set_target_properties(${PROJECT_NAME} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
-  OUTPUT_NAME ${PROJECT_NAME}
+  OUTPUT_NAME trossen_slate
 )
 
 # Link the serial driver library

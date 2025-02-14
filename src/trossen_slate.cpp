@@ -26,7 +26,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "trossen_slate/trossen_slate.hpp"
+#include "libtrossen_slate/trossen_slate.hpp"
 
 namespace trossen_slate
 {

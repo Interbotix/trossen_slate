@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-#include "trossen_slate/trossen_slate.hpp"
+#include "libtrossen_slate/trossen_slate.hpp"
 
 using namespace trossen_slate;
 
