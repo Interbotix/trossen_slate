@@ -3,6 +3,13 @@ name: Build Python wheels
 on:
   # Run on workflow dispatch, workflow call, push to main, or pull request to main
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      repo:
+        description: 'Repo to upload to (testpypi or pypi)'
+        type: string
+        default: 'testpypi'
+        required: true
   push:
     branches:
       - main
