@@ -106,9 +106,9 @@ PYBIND11_MODULE(trossen_slate, m)
       @param data The desired data to write
       @return true if succeeded, false otherwise
     )pbdoc")
+    .def(
+      "update_state",
     &TrossenSlate::update_state,
-    py::arg(
-      "data"),
     R"pbdoc(
       @brief Update the state of the SLATE base
       
