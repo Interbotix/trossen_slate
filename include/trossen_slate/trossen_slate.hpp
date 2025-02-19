@@ -91,6 +91,12 @@ public:
   bool write(base_driver::ChassisData data);
 
   /**
+   * @brief Update the state of the SLATE base
+   * @return true if succeeded, false otherwise
+   */
+  bool update_state();
+
+  /**
    * @brief Initializes the SLATE base
    * @param result The resulting output string
    * @return true if succeeded, false otherwise

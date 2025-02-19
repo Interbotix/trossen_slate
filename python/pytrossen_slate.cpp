@@ -93,6 +93,7 @@ PYBIND11_MODULE(trossen_slate, m)
       @brief Read data from the SLATE base
       
       @param data The desired data reference to update with current data
+      @return true if succeeded, false otherwise
     )pbdoc")
   .def(
     "write",
@@ -103,6 +104,14 @@ PYBIND11_MODULE(trossen_slate, m)
       @brief Write data to the SLATE base
       
       @param data The desired data to write
+      @return true if succeeded, false otherwise
+    )pbdoc")
+    &TrossenSlate::update_state,
+    py::arg(
+      "data"),
+    R"pbdoc(
+      @brief Update the state of the SLATE base
+      
       @return true if succeeded, false otherwise
     )pbdoc")
   .def(

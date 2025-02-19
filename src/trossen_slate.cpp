@@ -50,6 +50,11 @@ bool TrossenSlate::write(base_driver::ChassisData data)
   return true;
 }
 
+bool TrossenSlate::update_state()
+{
+  return base_driver::updateChassisInfo(&data_);
+}
+
 bool TrossenSlate::init_base(std::string & result)
 {
   if (!base_initialized_) {
@@ -127,10 +132,10 @@ bool TrossenSlate::enable_charging(bool enable, std::string & result)
 
 std::array<float, 2> TrossenSlate::get_vel()
 {
-  std::array<float, 2> cmd_vel;
-  cmd_vel[0] = data_.vel_x;
-  cmd_vel[1] = data_.vel_z;
-  return cmd_vel;
+  std::array<float, 2> vel;
+  vel[0] = data_.vel_x;
+  vel[1] = data_.vel_z;
+  return vel;
 }
 
 std::array<float, 3> TrossenSlate::get_pose()
