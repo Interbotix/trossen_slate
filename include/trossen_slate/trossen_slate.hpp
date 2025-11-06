@@ -175,13 +175,13 @@ public:
 
 private:
   // Flag to keep track of base initialization
-  bool base_initialized_ = false;
+  bool base_initialized_{false};
 
-  // Stored data of the SLATE base - see base_driver.hpp for details
-  base_driver::ChassisData data_;
+  // Stored data of the SLATE base
+  base_driver::ChassisData data_{};
 
   // Base command bytes containing data about charging and motor torque enabling
-  uint32_t sys_cmd_ = 0;
+  uint32_t sys_cmd_{0};
 };
 
 } // namespace trossen_slate
