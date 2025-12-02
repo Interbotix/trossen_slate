@@ -192,6 +192,9 @@ float TrossenSlate::get_voltage()
 
 void TrossenSlate::reset_odometry()
 {
+  // Get the latest chassis info
+  base_driver::updateChassisInfo(&data_);
+
   // Set the current odometry as the new zero point
   pose_[0] = data_.odom_x;
   pose_[1] = data_.odom_y;
