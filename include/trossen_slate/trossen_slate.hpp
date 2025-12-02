@@ -187,7 +187,7 @@ private:
   uint32_t sys_cmd_{0};
 
   // Pose of the base in meters (x,y) and radians (theta)
-  std::array<float, 3> pose_{0.0f, 0.0f, 0.0f};
+  std::array<float, 3> initial_pose_{0.0f, 0.0f, 0.0f};
 };
 
 } // namespace trossen_slate

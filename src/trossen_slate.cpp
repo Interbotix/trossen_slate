@@ -95,10 +95,10 @@ bool TrossenSlate::init_base(std::string & result)
   // Update the sys_cmd_ with current command state
   sys_cmd_ = data_.cmd;
 
-  // Update the pose_ with current odometry
-  pose_[0] = data_.odom_x;
-  pose_[1] = data_.odom_y;
-  pose_[2] = data_.odom_z;
+  // Update the initial_pose_ with current odometry
+  initial_pose_[0] = data_.odom_x;
+  initial_pose_[1] = data_.odom_y;
+  initial_pose_[2] = data_.odom_z;
 
   // Set the initialized flag to true
   base_initialized_ = true;
@@ -169,9 +169,9 @@ std::array<float, 2> TrossenSlate::get_vel()
 std::array<float, 3> TrossenSlate::get_pose()
 {
   std::array<float, 3> pose{0.0f, 0.0f, 0.0f};
-  pose[0] = data_.odom_x - pose_[0];
-  pose[1] = data_.odom_y - pose_[1];
-  pose[2] = data_.odom_z - pose_[2];
+  pose[0] = data_.odom_x - initial_pose_[0];
+  pose[1] = data_.odom_y - initial_pose_[1];
+  pose[2] = data_.odom_z - initial_pose_[2];
   return pose;
 }
 
@@ -196,9 +196,9 @@ void TrossenSlate::reset_odometry()
   base_driver::updateChassisInfo(&data_);
 
   // Set the current odometry as the new zero point
-  pose_[0] = data_.odom_x;
-  pose_[1] = data_.odom_y;
-  pose_[2] = data_.odom_z;
+  initial_pose_[0] = data_.odom_x;
+  initial_pose_[1] = data_.odom_y;
+  initial_pose_[2] = data_.odom_z;
 }
 
 } // namespace trossen_slate
