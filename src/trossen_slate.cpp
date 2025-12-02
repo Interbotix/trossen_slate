@@ -55,7 +55,7 @@ bool TrossenSlate::update_state()
   return base_driver::updateChassisInfo(&data_);
 }
 
-bool TrossenSlate::init_base(std::string & result)
+bool TrossenSlate::init_base(std::string & result, bool reset_odometry)
 {
   if (base_initialized_) {
     result = "Base already initialized.";
@@ -93,10 +93,17 @@ bool TrossenSlate::init_base(std::string & result)
   // Update the sys_cmd_ with current command state
   sys_cmd_ = data_.cmd;
 
-  // Update the initial_pose_ with current odometry
-  initial_pose_[0] = data_.odom_x;
-  initial_pose_[1] = data_.odom_y;
-  initial_pose_[2] = data_.odom_z;
+  if (reset_odometry) {
+    // Set the initial_pose_ to current odometry values
+    initial_pose_[0] = data_.odom_x;
+    initial_pose_[1] = data_.odom_y;
+    initial_pose_[2] = data_.odom_z;
+  } else {
+    // Otherwise, set initial_pose_ to zeros
+    initial_pose_[0] = 0.0;
+    initial_pose_[1] = 0.0;
+    initial_pose_[2] = 0.0;
+  }
 
   // Set the initialized flag to true
   base_initialized_ = true;
@@ -166,6 +173,14 @@ std::array<float, 2> TrossenSlate::get_vel()
 
 std::array<float, 3> TrossenSlate::get_pose()
 {
+  if (!base_initialized_) {
+    throw std::runtime_error("Base not initialized. Cannot get pose.");
+  }
+
+  if (!base_driver::updateChassisInfo(&data_)) {
+    throw std::runtime_error("Failed to read chassis data for pose.");
+  }
+
   std::array<float, 3> pose{0.0f, 0.0f, 0.0f};
   pose[0] = data_.odom_x - initial_pose_[0];
   pose[1] = data_.odom_y - initial_pose_[1];

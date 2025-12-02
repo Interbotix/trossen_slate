@@ -99,9 +99,10 @@ public:
   /**
    * @brief Initializes the SLATE base
    * @param result The resulting output string
+   * @param reset_odometry Whether to reset odometry upon initialization, default false
    * @return true if succeeded, false otherwise
    */
-  bool init_base(std::string & result);
+  bool init_base(std::string & result, bool reset_odometry = false);
 
   /**
    * @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
