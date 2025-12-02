@@ -26,8 +26,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <iostream>
-
 #include "trossen_slate/trossen_slate.hpp"
 
 namespace trossen_slate
@@ -190,15 +188,20 @@ float TrossenSlate::get_voltage()
   return data_.voltage;
 }
 
-void TrossenSlate::reset_odometry()
+bool TrossenSlate::reset_odometry(std::string & result)
 {
   // Get the latest chassis info
-  base_driver::updateChassisInfo(&data_);
+  if (!base_driver::updateChassisInfo(&data_)) {
+    result = "Failed to read chassis data for odometry reset.";
+    return false;
+  }
 
   // Set the current odometry as the new zero point
   initial_pose_[0] = data_.odom_x;
   initial_pose_[1] = data_.odom_y;
   initial_pose_[2] = data_.odom_z;
+
+  return true;
 }
 
 } // namespace trossen_slate

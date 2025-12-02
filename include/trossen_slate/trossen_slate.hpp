@@ -143,8 +143,10 @@ public:
 
   /**
    * @brief Reset the odometry to zero
+   * @param result The resulting output string
+   * @return true if succeeded, false otherwise
    */
-  void reset_odometry();
+  bool reset_odometry(std::string & result);
 
   /**
    * @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
