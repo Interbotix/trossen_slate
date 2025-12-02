@@ -26,6 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include <iostream>
+
 #include "trossen_slate/trossen_slate.hpp"
 
 namespace trossen_slate
@@ -57,24 +59,50 @@ bool TrossenSlate::update_state()
 
 bool TrossenSlate::init_base(std::string & result)
 {
-  if (!base_initialized_) {
-    result = "Using Trossen SLATE Driver Version: 'v" + std::to_string(VERSION_MAJOR) + "." +
-      std::to_string(VERSION_MINOR) + "." + std::to_string(VERSION_PATCH) + "'.";
-    std::string dev;
-    if (!base_driver::chassisInit(dev)) {
-      result += "\nFailed to initialize base port.";
-      return false;
-    } else {
-      result += "\nInitalized base at port: '" + dev + "'.";
-      char version[32] = {0};
-      if (base_driver::getVersion(version)) {
-        result += "\nBase version: 'v" + std::string(version) + "'.";
-        base_initialized_ = true;
-      }
-    }
-  } else {
+  if (base_initialized_) {
     result = "Base already initialized.";
+    return true;
   }
+
+  // Prepare result string with the driver
+  result =
+    "Using Trossen SLATE Driver Version: 'v"
+    + std::to_string(VERSION_MAJOR) + "."
+    + std::to_string(VERSION_MINOR) + "."
+    + std::to_string(VERSION_PATCH) + "'.";
+  std::string dev;
+
+  // Attempt to initialize the base
+  if (!base_driver::chassisInit(dev)) {
+    // If initialization failed, report and return false
+    result += "\nFailed to initialize base port.";
+    return false;
+  }
+
+  // Initialization succeeded, get base firmware version
+  result += "\nInitalized base at port: '" + dev + "'.";
+  char version[32] = {0};
+  if (base_driver::getVersion(version)) {
+    result += "\nBase version: 'v" + std::string(version) + "'.";
+  }
+
+  // Update the chassis info to have initial data
+  if (!base_driver::updateChassisInfo(&data_)) {
+    result += "\nFailed to read initial chassis data.";
+    return false;
+  }
+
+  // Update the sys_cmd_ with current command state
+  sys_cmd_ = data_.cmd;
+
+  // Update the pose_ with current odometry
+  pose_[0] = data_.odom_x;
+  pose_[1] = data_.odom_y;
+  pose_[2] = data_.odom_z;
+
+  // Set the initialized flag to true
+  base_initialized_ = true;
+
   return true;
 }
 
@@ -140,10 +168,10 @@ std::array<float, 2> TrossenSlate::get_vel()
 
 std::array<float, 3> TrossenSlate::get_pose()
 {
-  std::array<float, 3> pose;
-  pose[0] = data_.odom_x;
-  pose[1] = data_.odom_y;
-  pose[2] = data_.odom_z;
+  std::array<float, 3> pose{0.0f, 0.0f, 0.0f};
+  pose[0] = data_.odom_x - pose_[0];
+  pose[1] = data_.odom_y - pose_[1];
+  pose[2] = data_.odom_z - pose_[2];
   return pose;
 }
 
@@ -160,6 +188,14 @@ float TrossenSlate::get_current()
 float TrossenSlate::get_voltage()
 {
   return data_.voltage;
+}
+
+void TrossenSlate::reset_odometry()
+{
+  // Set the current odometry as the new zero point
+  pose_[0] = data_.odom_x;
+  pose_[1] = data_.odom_y;
+  pose_[2] = data_.odom_z;
 }
 
 } // namespace trossen_slate
