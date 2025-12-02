@@ -190,6 +190,12 @@ float TrossenSlate::get_voltage()
 
 bool TrossenSlate::reset_odometry(std::string & result)
 {
+  // Check if the base is initialized
+  if (!base_initialized_) {
+    result = "Base not initialized. Cannot reset odometry.";
+    return false;
+  }
+
   // Get the latest chassis info
   if (!base_driver::updateChassisInfo(&data_)) {
     result = "Failed to read chassis data for odometry reset.";
@@ -201,6 +207,7 @@ bool TrossenSlate::reset_odometry(std::string & result)
   initial_pose_[1] = data_.odom_y;
   initial_pose_[2] = data_.odom_z;
 
+  result = "Odometry successfully reset.";
   return true;
 }
 
