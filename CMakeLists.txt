@@ -65,6 +65,9 @@ target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
 add_executable(basic_demo demo/basic_demo.cpp)
 target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
 
+add_executable(reset_odom_demo demo/reset_odom_demo.cpp)
+target_link_libraries(reset_odom_demo PRIVATE ${PROJECT_NAME})
+
 # Install the library headers
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
 
@@ -94,7 +97,11 @@ install(
 )
 
 # Install the demo executables
-install(TARGETS advanced_demo basic_demo
+install(
+  TARGETS
+    advanced_demo
+    basic_demo
+    reset_odom_demo
   RUNTIME DESTINATION bin
 )
 
