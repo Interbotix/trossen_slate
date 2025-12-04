@@ -99,9 +99,10 @@ public:
   /**
    * @brief Initializes the SLATE base
    * @param result The resulting output string
+   * @param reset_odometry Whether to reset odometry upon initialization, default false
    * @return true if succeeded, false otherwise
    */
-  bool init_base(std::string & result);
+  bool init_base(std::string & result, bool reset_odometry = false);
 
   /**
    * @brief Set velocity commands in meters per seconds (linear) and radians per seconds (angular)
@@ -114,7 +115,6 @@ public:
   /**
    * @brief Set light state
    * @param light_state The desired light state
-   * @param result The resulting output string
    * @return true if succeeded, false otherwise
    */
   bool set_light_state(LightState light_state);
@@ -122,7 +122,6 @@ public:
   /**
    * @brief Set text on screen
    * @param text The desired text
-   * @param result The resulting output string
    * @return true if succeeded, false otherwise
    */
   bool set_text(std::string text);
@@ -142,6 +141,13 @@ public:
    * @return true if succeeded, false otherwise
    */
   bool enable_charging(bool enable, std::string & result);
+
+  /**
+   * @brief Reset the odometry to zero
+   * @param result The resulting output string
+   * @return true if succeeded, false otherwise
+   */
+  bool reset_odometry(std::string & result);
 
   /**
    * @brief Get the current velocity in meters per seconds (linear) and radians per seconds (angular)
@@ -182,6 +188,9 @@ private:
 
   // Base command bytes containing data about charging and motor torque enabling
   uint32_t sys_cmd_{0};
+
+  // Pose of the base in meters (x,y) and radians (theta)
+  std::array<float, 3> initial_pose_{0.0f, 0.0f, 0.0f};
 };
 
 } // namespace trossen_slate

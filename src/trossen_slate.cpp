@@ -55,26 +55,59 @@ bool TrossenSlate::update_state()
   return base_driver::updateChassisInfo(&data_);
 }
 
-bool TrossenSlate::init_base(std::string & result)
+bool TrossenSlate::init_base(std::string & result, bool reset_odometry)
 {
-  if (!base_initialized_) {
-    result = "Using Trossen SLATE Driver Version: 'v" + std::to_string(VERSION_MAJOR) + "." +
-      std::to_string(VERSION_MINOR) + "." + std::to_string(VERSION_PATCH) + "'.";
-    std::string dev;
-    if (!base_driver::chassisInit(dev)) {
-      result += "\nFailed to initialize base port.";
-      return false;
-    } else {
-      result += "\nInitalized base at port: '" + dev + "'.";
-      char version[32] = {0};
-      if (base_driver::getVersion(version)) {
-        result += "\nBase version: 'v" + std::string(version) + "'.";
-        base_initialized_ = true;
-      }
-    }
-  } else {
+  if (base_initialized_) {
     result = "Base already initialized.";
+    return true;
   }
+
+  // Prepare result string with the driver
+  result =
+    "Using Trossen SLATE Driver Version: 'v"
+    + std::to_string(VERSION_MAJOR) + "."
+    + std::to_string(VERSION_MINOR) + "."
+    + std::to_string(VERSION_PATCH) + "'.";
+  std::string dev;
+
+  // Attempt to initialize the base
+  if (!base_driver::chassisInit(dev)) {
+    // If initialization failed, report and return false
+    result += "\nFailed to initialize base port.";
+    return false;
+  }
+
+  // Initialization succeeded, get base firmware version
+  result += "\nInitalized base at port: '" + dev + "'.";
+  char version[32] = {0};
+  if (base_driver::getVersion(version)) {
+    result += "\nBase version: 'v" + std::string(version) + "'.";
+  }
+
+  // Update the chassis info to have initial data
+  if (!base_driver::updateChassisInfo(&data_)) {
+    result += "\nFailed to read initial chassis data.";
+    return false;
+  }
+
+  // Update the sys_cmd_ with current command state
+  sys_cmd_ = data_.cmd;
+
+  if (reset_odometry) {
+    // Set the initial_pose_ to current odometry values
+    initial_pose_[0] = data_.odom_x;
+    initial_pose_[1] = data_.odom_y;
+    initial_pose_[2] = data_.odom_z;
+  } else {
+    // Otherwise, set initial_pose_ to zeros
+    initial_pose_[0] = 0.0;
+    initial_pose_[1] = 0.0;
+    initial_pose_[2] = 0.0;
+  }
+
+  // Set the initialized flag to true
+  base_initialized_ = true;
+
   return true;
 }
 
@@ -140,10 +173,18 @@ std::array<float, 2> TrossenSlate::get_vel()
 
 std::array<float, 3> TrossenSlate::get_pose()
 {
-  std::array<float, 3> pose;
-  pose[0] = data_.odom_x;
-  pose[1] = data_.odom_y;
-  pose[2] = data_.odom_z;
+  if (!base_initialized_) {
+    throw std::runtime_error("Base not initialized. Cannot get pose.");
+  }
+
+  if (!base_driver::updateChassisInfo(&data_)) {
+    throw std::runtime_error("Failed to read chassis data for pose.");
+  }
+
+  std::array<float, 3> pose{0.0f, 0.0f, 0.0f};
+  pose[0] = data_.odom_x - initial_pose_[0];
+  pose[1] = data_.odom_y - initial_pose_[1];
+  pose[2] = data_.odom_z - initial_pose_[2];
   return pose;
 }
 
@@ -160,6 +201,29 @@ float TrossenSlate::get_current()
 float TrossenSlate::get_voltage()
 {
   return data_.voltage;
+}
+
+bool TrossenSlate::reset_odometry(std::string & result)
+{
+  // Check if the base is initialized
+  if (!base_initialized_) {
+    result = "Base not initialized. Cannot reset odometry.";
+    return false;
+  }
+
+  // Get the latest chassis info
+  if (!base_driver::updateChassisInfo(&data_)) {
+    result = "Failed to read chassis data for odometry reset.";
+    return false;
+  }
+
+  // Set the current odometry as the new zero point
+  initial_pose_[0] = data_.odom_x;
+  initial_pose_[1] = data_.odom_y;
+  initial_pose_[2] = data_.odom_z;
+
+  result = "Odometry successfully reset.";
+  return true;
 }
 
 } // namespace trossen_slate

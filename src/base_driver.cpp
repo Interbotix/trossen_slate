@@ -56,8 +56,8 @@ bool updateChassisInfo(ChassisData * data)
 {
   return check(
     driver.readWriteHoldingRegs(
-      0x00, 26, (uint16_t *)&(data->system_state),
-      0x40, 8, (uint16_t *)data));
+      0x00, 26, reinterpret_cast<uint16_t *>(&(data->system_state)),
+      0x40, 8, reinterpret_cast<uint16_t *>(data)));
 }
 
 bool setSysCmd(uint32_t cmd)
