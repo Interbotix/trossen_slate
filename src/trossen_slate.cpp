@@ -27,6 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "trossen_slate/trossen_slate.hpp"
+#include <stdexcept>
 
 namespace trossen_slate
 {

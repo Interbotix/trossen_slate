@@ -14,6 +14,9 @@ endif()
 # Set the build type to Release
 set(CMAKE_BUILD_TYPE "Release")
 
+# Option to build with ROS support
+option(BUILD_WITH_ROS "Build with ROS/ament_cmake support" ON)
+
 # Define the serial driver library name
 set(serial_driver "chassis_driver")
 
@@ -26,8 +29,8 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-# Find the ament_cmake package if not building with scikit-build
-if(NOT DEFINED SKBUILD)
+# Find the ament_cmake package if building with ROS support and not building with scikit-build
+if(NOT DEFINED SKBUILD AND BUILD_WITH_ROS)
   find_package(ament_cmake REQUIRED)
 endif()
 
@@ -88,13 +91,15 @@ install(
     include/${PROJECT_NAME}
 )
 
-# Install the package.xml file
-install(
-  FILES
-    package.xml
-  DESTINATION
-    share/${PROJECT_NAME}
-)
+# Install the package.xml file (only when building with ROS)
+if(BUILD_WITH_ROS)
+  install(
+    FILES
+      package.xml
+    DESTINATION
+      share/${PROJECT_NAME}
+  )
+endif()
 
 # Install the demo executables
 install(
@@ -151,8 +156,8 @@ if(DEFINED SKBUILD)
   )
 endif()
 
-# If not building with scikit-build, export the ament package
-if(NOT DEFINED SKBUILD)
+# If not building with scikit-build and building with ROS, export the ament package
+if(NOT DEFINED SKBUILD AND BUILD_WITH_ROS)
   ament_export_targets("export_${PROJECT_NAME}")
   ament_package()
 endif()
