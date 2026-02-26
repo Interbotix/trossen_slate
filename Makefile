@@ -4,6 +4,7 @@ NPROC        := $(shell nproc 2>/dev/null || echo 4)
 
 .PHONY: build install clean demo python help
 build:
+	@cmake -S . -B $(BUILD_DIR) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR)
 	@cmake --build $(BUILD_DIR) -j$(NPROC)
 
 install: build
@@ -12,7 +13,9 @@ install: build
 clean:
 	@rm -rf $(BUILD_DIR) $(INSTALL_DIR)
 
-demo: build
+demo:
+	@cmake -S . -B $(BUILD_DIR) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DBUILD_DEMOS=ON
+	@cmake --build $(BUILD_DIR) -j$(NPROC)
 	@./$(BUILD_DIR)/basic_demo
 
 python:
