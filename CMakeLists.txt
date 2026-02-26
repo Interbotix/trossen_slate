@@ -66,15 +66,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Link the serial driver library
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libchassis_driver.so)
 
-# Add the demo executables
-add_executable(advanced_demo demo/advanced_demo.cpp)
-target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
+# Optionally build demo executables
+option(BUILD_DEMOS "Build demo executables" OFF)
 
-add_executable(basic_demo demo/basic_demo.cpp)
-target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
+if(BUILD_DEMOS)
+  add_executable(advanced_demo demo/advanced_demo.cpp)
+  target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
 
-add_executable(reset_odom_demo demo/reset_odom_demo.cpp)
-target_link_libraries(reset_odom_demo PRIVATE ${PROJECT_NAME})
+  add_executable(basic_demo demo/basic_demo.cpp)
+  target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
+
+  add_executable(reset_odom_demo demo/reset_odom_demo.cpp)
+  target_link_libraries(reset_odom_demo PRIVATE ${PROJECT_NAME})
+endif()
 
 # Install the library headers
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
@@ -105,13 +109,15 @@ install(
 )
 
 # Install the demo executables
-install(
-  TARGETS
-    advanced_demo
-    basic_demo
-    reset_odom_demo
-  RUNTIME DESTINATION bin
-)
+if(BUILD_DEMOS)
+  install(
+    TARGETS
+      advanced_demo
+      basic_demo
+      reset_odom_demo
+    RUNTIME DESTINATION bin
+  )
+endif()
 
 # Install the serial driver library
 install(
