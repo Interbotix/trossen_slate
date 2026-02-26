@@ -1,3 +1,8 @@
+.vscode/
+
 build/
+install/
+
+.venv/
 dist/
 __pycache__/

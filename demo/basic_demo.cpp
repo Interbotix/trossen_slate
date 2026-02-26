@@ -41,18 +41,24 @@ int main()
 
   // Initialize base and output result
   std::string result_init;
-  slate.init_base(result_init);
+  if (!slate.init_base(result_init)) {
+    std::cerr << result_init << std::endl;
+    return 1;
+  }
   std::cout << result_init << std::endl;
 
   // Display "Hello world" on screen
   slate.set_text("Hello world");
 
-  while (true) {
-    // Set the LED colors to PURPLE
-    slate.set_light_state(LightState::PURPLE);
+  // Set the LED colors to PURPLE
+  slate.set_light_state(LightState::PURPLE);
 
-    // Set angular velocity to 0.1
-    slate.set_cmd_vel(0.0, 0.1);
+  // Set angular velocity to 0.1
+  slate.set_cmd_vel(0.0, 0.1);
+
+  while (true) {
+    // Update state to fetch fresh data from hardware
+    slate.update_state();
 
     // Output charge percentage
     std::cout << "Charge: " << slate.get_charge() << "%" << std::endl;

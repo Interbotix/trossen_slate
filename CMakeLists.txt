@@ -7,12 +7,14 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 # Add compiler options for GCC and Clang
-if(CMAKE_COMPILER_IS_GNUXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Set the build type to Release
-set(CMAKE_BUILD_TYPE "Release")
+# Default to Release build type if not specified
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
 
 # Define the serial driver library name
 set(serial_driver "chassis_driver")
@@ -26,9 +28,15 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-# Find the ament_cmake package if not building with scikit-build
+# Optionally find ament_cmake for ROS 2 builds (skip when building with scikit-build)
 if(NOT DEFINED SKBUILD)
-  find_package(ament_cmake REQUIRED)
+  find_package(ament_cmake QUIET)
+endif()
+
+if(ament_cmake_FOUND)
+  message(STATUS "ament_cmake found - building as a ROS 2 (ament) package")
+else()
+  message(STATUS "ament_cmake not found - building as a standalone CMake project")
 endif()
 
 # Include the version generation script
@@ -58,15 +66,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Link the serial driver library
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libchassis_driver.so)
 
-# Add the demo executables
-add_executable(advanced_demo demo/advanced_demo.cpp)
-target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
+# Optionally build demo executables
+option(BUILD_DEMOS "Build demo executables" OFF)
 
-add_executable(basic_demo demo/basic_demo.cpp)
-target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
+if(BUILD_DEMOS)
+  add_executable(advanced_demo demo/advanced_demo.cpp)
+  target_link_libraries(advanced_demo PRIVATE ${PROJECT_NAME})
 
-add_executable(reset_odom_demo demo/reset_odom_demo.cpp)
-target_link_libraries(reset_odom_demo PRIVATE ${PROJECT_NAME})
+  add_executable(basic_demo demo/basic_demo.cpp)
+  target_link_libraries(basic_demo PRIVATE ${PROJECT_NAME})
+
+  add_executable(reset_odom_demo demo/reset_odom_demo.cpp)
+  target_link_libraries(reset_odom_demo PRIVATE ${PROJECT_NAME})
+endif()
 
 # Install the library headers
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
@@ -97,13 +109,15 @@ install(
 )
 
 # Install the demo executables
-install(
-  TARGETS
-    advanced_demo
-    basic_demo
-    reset_odom_demo
-  RUNTIME DESTINATION bin
-)
+if(BUILD_DEMOS)
+  install(
+    TARGETS
+      advanced_demo
+      basic_demo
+      reset_odom_demo
+    RUNTIME DESTINATION bin
+  )
+endif()
 
 # Install the serial driver library
 install(
@@ -151,8 +165,8 @@ if(DEFINED SKBUILD)
   )
 endif()
 
-# If not building with scikit-build, export the ament package
-if(NOT DEFINED SKBUILD)
+# If ament is available, export the ament package
+if(ament_cmake_FOUND)
   ament_export_targets("export_${PROJECT_NAME}")
   ament_package()
 endif()

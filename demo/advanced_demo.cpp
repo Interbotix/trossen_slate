@@ -41,7 +41,10 @@ int main()
 
   // Initialize base and output result
   std::string result_init;
-  slate.init_base(result_init);
+  if (!slate.init_base(result_init)) {
+    std::cerr << result_init << std::endl;
+    return 1;
+  }
   std::cout << result_init << std::endl;
 
   // Disable charging and output result
@@ -54,14 +57,15 @@ int main()
   slate.enable_motor_torque(true, result_torque);
   std::cout << result_torque << std::endl;
 
-  while (true) {
-    // Initialize data with angular velocity and light state
-    base_driver::ChassisData my_data = {
-      .cmd_vel_z = -0.1,
-      .light_state = static_cast<uint32_t>(LightState::WHITE)};
+  // Set angular velocity and light state
+  base_driver::ChassisData my_data{};
+  my_data.cmd_vel_z = -0.1;
+  my_data.light_state = static_cast<uint32_t>(LightState::WHITE);
+  slate.write(my_data);
 
-    // Write and update base data
-    slate.write(my_data);
+  while (true) {
+    // Update state to fetch fresh data from hardware
+    slate.update_state();
 
     // Initialize empty log data
     base_driver::ChassisData log_data;

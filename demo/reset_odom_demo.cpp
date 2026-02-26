@@ -58,7 +58,10 @@ int main()
 
   // Initialize base and output result
   std::string result_init;
-  slate.init_base(result_init);
+  if (!slate.init_base(result_init)) {
+    std::cerr << result_init << std::endl;
+    return 1;
+  }
   std::cout << result_init << std::endl;
 
   // Disable motor torque
@@ -69,6 +72,7 @@ int main()
   // Print odometry before reset
   std::cout << "\n=== Odometry Before Reset ===" << std::endl;
   for (int i = 0; i < 5; i++) {
+    slate.update_state();
     std::array<float, 3> pose = slate.get_pose();
     std::cout
       << "X: " << pose[0]
@@ -83,6 +87,7 @@ int main()
   std::cin.get();
 
   // Print off odom before reset
+  slate.update_state();
   std::array<float, 3> pose_before = slate.get_pose();
   std::cout
     << "Odometry before reset - X: " << pose_before[0]
@@ -98,6 +103,7 @@ int main()
   // Continue printing odometry after reset
   std::cout << "\n=== Odometry After Reset ===" << std::endl;
   for (int i = 0; i < 10; i++) {
+    slate.update_state();
     std::array<float, 3> pose = slate.get_pose();
     std::cout
       << "X: " << pose[0]
