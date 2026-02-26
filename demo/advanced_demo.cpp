@@ -57,6 +57,12 @@ int main()
   slate.enable_motor_torque(true, result_torque);
   std::cout << result_torque << std::endl;
 
+  // Set angular velocity and light state
+  base_driver::ChassisData my_data{};
+  my_data.cmd_vel_z = -0.1;
+  my_data.light_state = static_cast<uint32_t>(LightState::WHITE);
+  slate.write(my_data);
+
   while (true) {
     // Update state to fetch fresh data from hardware
     slate.update_state();
