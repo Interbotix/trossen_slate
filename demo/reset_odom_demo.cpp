@@ -72,6 +72,7 @@ int main()
   // Print odometry before reset
   std::cout << "\n=== Odometry Before Reset ===" << std::endl;
   for (int i = 0; i < 5; i++) {
+    slate.update_state();
     std::array<float, 3> pose = slate.get_pose();
     std::cout
       << "X: " << pose[0]
@@ -86,6 +87,7 @@ int main()
   std::cin.get();
 
   // Print off odom before reset
+  slate.update_state();
   std::array<float, 3> pose_before = slate.get_pose();
   std::cout
     << "Odometry before reset - X: " << pose_before[0]
@@ -101,6 +103,7 @@ int main()
   // Continue printing odometry after reset
   std::cout << "\n=== Odometry After Reset ===" << std::endl;
   for (int i = 0; i < 10; i++) {
+    slate.update_state();
     std::array<float, 3> pose = slate.get_pose();
     std::cout
       << "X: " << pose[0]

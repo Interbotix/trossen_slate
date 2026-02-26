@@ -58,13 +58,8 @@ int main()
   std::cout << result_torque << std::endl;
 
   while (true) {
-    // Initialize data with angular velocity and light state
-    base_driver::ChassisData my_data{};
-    my_data.cmd_vel_z = -0.1;
-    my_data.light_state = static_cast<uint32_t>(LightState::WHITE);
-
-    // Write and update base data
-    slate.write(my_data);
+    // Update state to fetch fresh data from hardware
+    slate.update_state();
 
     // Initialize empty log data
     base_driver::ChassisData log_data;
