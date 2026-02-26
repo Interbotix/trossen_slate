@@ -58,7 +58,10 @@ int main()
 
   // Initialize base and output result
   std::string result_init;
-  slate.init_base(result_init);
+  if (!slate.init_base(result_init)) {
+    std::cerr << result_init << std::endl;
+    return 1;
+  }
   std::cout << result_init << std::endl;
 
   // Disable motor torque
