@@ -128,7 +128,19 @@ install(
 )
 
 # If building with scikit-build, add Python bindings
-if(DEFINED SKBUILD)
+if(SKBUILD)
+  set(_trossen_slate_python_bindings_default ON)
+else()
+  set(_trossen_slate_python_bindings_default OFF)
+endif()
+option(TROSSEN_SLATE_BUILD_PYTHON_BINDINGS
+  "Build the ${PROJECT_NAME} Python bindings"
+  ${_trossen_slate_python_bindings_default}
+)
+unset(_trossen_slate_python_bindings_default)
+
+# Add Python bindings if the option is enabled
+if(TROSSEN_SLATE_BUILD_PYTHON_BINDINGS)
   # Enable finding Python
   set(PYBIND11_FINDPYTHON ON)
   find_package(pybind11 CONFIG REQUIRED)
