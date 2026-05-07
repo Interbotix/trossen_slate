@@ -28,6 +28,20 @@ else()
   message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+# Expose the prebuilt chassis_driver shared library so consuming projects (e.g. via FetchContent)
+# can reference it without reconstructing the path or duplicating the architecture-detection logic
+# above. Use the variable for a raw path string, or the imported target for modern CMake-style
+# linking.
+set(TROSSEN_SLATE_CHASSIS_DRIVER_LIBRARY
+  "${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/lib${serial_driver}.so"
+  CACHE FILEPATH "Path to the prebuilt chassis_driver shared library" FORCE
+)
+
+add_library(${PROJECT_NAME}::${serial_driver} SHARED IMPORTED GLOBAL)
+set_target_properties(${PROJECT_NAME}::${serial_driver} PROPERTIES
+  IMPORTED_LOCATION "${TROSSEN_SLATE_CHASSIS_DRIVER_LIBRARY}"
+)
+
 # Optionally find ament_cmake for ROS 2 builds (skip when building with scikit-build)
 if(NOT DEFINED SKBUILD)
   find_package(ament_cmake QUIET)
@@ -64,7 +78,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # Link the serial driver library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libchassis_driver.so)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}::${serial_driver})
 
 # Optionally build demo executables
 option(BUILD_DEMOS "Build demo executables" OFF)
@@ -122,7 +136,7 @@ endif()
 # Install the serial driver library
 install(
   FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/lib${serial_driver}.so
+    ${TROSSEN_SLATE_CHASSIS_DRIVER_LIBRARY}
   DESTINATION
     lib
 )
